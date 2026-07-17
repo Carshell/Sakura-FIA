@@ -1,0 +1,19 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.idea/
+.vscode/
+
+# дані / моделі можна залишити, але кеш і БД — ні
+**/drone_data.db
+**/__pycache__/
+Computer_program/__pycache__/
+Dashbord_program/__pycache__/
+
+# тимчасові кадри (якщо багато)
+# static/images/*.jpg
+
+.env
+*.log

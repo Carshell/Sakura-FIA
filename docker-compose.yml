@@ -1,0 +1,38 @@
+services:
+  dashboard:
+    build:
+      context: ./Dashbord_program
+    container_name: drone-dashboard
+    ports:
+      - "5000:5000"
+    volumes:
+      - dashboard-data:/app/data
+    environment:
+      DATA_DIR: /app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/targets"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  # Відео з USB-антени на Windows запускається локально через start.ps1
+  # (Docker не має прямого доступу до OTG-приймача на ноуті)
+  video:
+    profiles: ["linux"]
+    build:
+      context: ./Computer_program
+    container_name: drone-video
+    depends_on:
+      dashboard:
+        condition: service_healthy
+    environment:
+      DASHBOARD_HOST: http://dashboard:5000
+      HEADLESS: "1"
+      CAMERA_INDEX: "0"
+      VIDEO_SCRIPT: video_get.py
+    restart: unless-stopped
+
+volumes:
+  dashboard-data:
